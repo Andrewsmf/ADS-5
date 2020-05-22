@@ -1,118 +1,140 @@
-
-struct SYM
-{
-	char ch;
-	int prior;
-	SYM* next;
-};
+#include <cassert>
+ 
 
 template<typename T>
 class TPQueue
 {
   // Сюда помещается описание структуры "Очередь с приоритетами"
+  struct ITEM
+    {
+        T data;
+        ITEM * next;
+    };
 public:
-	TPQueue() :head(nullptr), tail(nullptr) {}
-	~TPQueue();
-	void push(const T&);
-	T pop();
-	void print() const;
-	T* create(const T&);
+    TPQueue() :head(nullptr), tail(nullptr) {}
+    ~TPQueue();
+    void push(const T&);
+    T pop();
+    void print() const;
 private:
-	T* head;
-	T* tail;
+    TPQueue::ITEM* create(const T&);
+    ITEM* head;
+    ITEM* u;
+    ITEM* tail;
 };
-
 template<typename T>
-typename T* TPQueue<T>::create(const T& data)
+typename TPQueue<T>::ITEM* TPQueue<T>::create(const T& data)
 {
-	T* item = new T;
-	item->ch = data.ch;
-	item->prior = data.prior;
-	item->next = nullptr;
-	return item;
+    ITEM* item = new ITEM;
+    item->data = data;
+    item->next = nullptr;
+    return item;
 }
-
-struct SYM
 template<typename T>
 TPQueue<T>::~TPQueue()
 {
-	char ch;
-	int  prior;
-}; 
-	while (head)
-		pop();
+    while (head)
+        pop();
 }
-
 template<typename T>
-void TPQueue<T>::push(const T& data)
+void TPQueue<T>::push(const T& inf)
 {
-	if (tail && head)
-	{
-		T* temp = head;
-		while (temp)
-		{
-			if (data.prior > temp->prior)
-			{
-				bool flag = 0;
+    if (head == nullptr)
+    {
+        head = create(inf);
+        u = head;
+        tail = head;
+    }
+    else if (tail->data.prior >= inf.prior)
+    {
 
-				T* newNode = new T{0,0,nullptr};
-				newNode->ch = temp->ch;
-				newNode->prior = temp->prior;
-				newNode->next = temp->next;
+        if (tail->data.prior == inf.prior && tail->data.ch == inf.ch)
+        {
+            tail->data = inf;
+        }
+        else
+        {
+            if (tail->data.prior >= inf.prior && tail->data.ch != inf.ch)
+            {
+                tail->next = create(inf);
+                tail = tail->next;
+            }
+        }
+    }
+    else
+    {
 
+        if (tail->data.prior < inf.prior)
+        {
+            if (inf.prior > head->data.prior)
+            {
+                ITEM* tmp = NULL;
+                tmp = create(inf);
+                tmp->next = head;
+                head = tmp;
+            }
+            else
 
-				if (head == temp)
-					flag = 1;
-				if (tail == temp)
-					flag = 2;
+                if (inf.prior == head->data.prior)
 
-				temp->ch=data.ch;
-				temp->prior = data.prior;
-				temp->next = newNode;
+                    if (inf.ch == head->data.ch)
+                        head->data = inf;
+                    else
+                    {
+                        ITEM* u = nullptr;
+                        u = create(inf);
+                        u->next = head->next;
+                        head->next = u;
 
-				if (flag == 1)
-					head = temp;
-				if (flag == 2)
-					tail = temp;
-				return;
-			}
-			temp = temp->next;
-		}
-		tail->next = create(data);
-		tail = tail->next;
-	}
-	else
-	{
-		head = create(data);
-		tail = head;
-	}
+                    }
+
+                else
+                {
+                    if (inf.prior < head->data.prior)
+                    {
+                        ITEM* u = nullptr;
+                        u = create(inf);
+                        u->next = head->next;
+                        head->next = u;
+                    }
+                }
+        }
+    }
 }
 
 template<typename T>
 T TPQueue<T>::pop()
 {
-	if (head)
-	{
-		T* temp = head->next;
-		T data{head->ch,head->prior,nullptr};
-		delete head;
-		head = temp;
-		return data;
-	}
-	else
-	{
-		return T{0,0,nullptr};
-	}
+    if (head)
+    {
+        ITEM* temp = head->next;
+        T data = head->data;
+        delete head;
+        head = temp;
+        return data;
+    }
 }
-
 template<typename T>
-void TPQueue<T>::print() const
+void TPQueue<T>::print() const	
 {
-	T* temp = head;
-	while (temp)
-	{
-		std::cout << temp->ch << " ";
-		temp = temp->next;
-	}
-	std::cout << std::endl;
-}
+    {
+        ITEM* temp = head;	    
+        while (temp)	 
+        {
+            {
+                std::cout << temp->data << " ";	        
+                temp = temp->next;	       
+            }
+        }
+        std::cout << std::endl;
+    }
+    };
+
+
+struct SYM
+{
+	char ch;
+	int  prior;
+}; 
+  SYM* next;
+};
